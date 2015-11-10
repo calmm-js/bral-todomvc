@@ -42,7 +42,7 @@ const web = m => {
   const editingAtom = Atom(null)
 
   const textInput = ({text, placeholder, className, save, exit}) => {
-    const textAtom = Atom(text)
+    const textAtom = Atom(text || "")
     const Exit = _ => {textAtom.set(""); editingAtom.set(null)}
     const Save = _ => {
       const title = textAtom.get().trim()
