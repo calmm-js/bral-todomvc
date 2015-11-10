@@ -4,9 +4,14 @@ import Bacon from "baconjs"
 import {Model as Atom} from "bacon.model"
 import Reify from "bacon.react"
 
-const model = () => {
-  const counterAtom = Atom(0)
-  const itemsAtom = Atom([])
+const normalizeIds = (all) =>
+  (i => all.map(item => ({...item, id: i++})))(0)
+
+const model = (initialRaw) => {
+  const initial = normalizeIds(initialRaw || [])
+
+  const itemsAtom = Atom(initial)
+  const counterAtom = Atom(initial.length)
 
   const inc = () =>
     {var i = counterAtom.get()
@@ -115,4 +120,9 @@ const web = m => {
   </Reify>
 }
 
-ReactDOM.render(web(model()), document.getElementById("app"))
+const storeKey = "react.bacon-todos"
+
+const m = model(JSON.parse(localStorage.getItem(storeKey) || "[]"))
+m.all.onValue(is => localStorage.setItem(storeKey, JSON.stringify(is)))
+
+ReactDOM.render(web(m), document.getElementById("app"))
