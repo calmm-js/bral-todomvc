@@ -14,7 +14,7 @@ const model = (initialRaw) => {
   const counterAtom = Atom(initial.length)
 
   const inc = () =>
-    {var i = counterAtom.get()
+    {const i = counterAtom.get()
      counterAtom.set(i+1)
      return i}
 
