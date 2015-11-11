@@ -48,7 +48,7 @@ const web = m => {
 
   const textInput = ({text, placeholder, className, save, exit}) => {
     const textAtom = Atom(text || "")
-    const Exit = _ => {textAtom.set(""); editingAtom.set(null)}
+    const Exit = _ => {textAtom.set(""); !exit || exit()}
     const Save = _ => {
       const title = textAtom.get().trim()
       title !== "" && save(title)
@@ -80,8 +80,9 @@ const web = m => {
         <button className="destroy" onClick={_ => m.remItem({id})}/>
         {editing === id
          ? textInput({text: title, className: "edit",
-                      save: title => m.setItem({id, title, isDone})})
-         : <span/>}
+                      save: title => m.setItem({id, title, isDone}),
+                      exit: () => editingAtom.set(null)})
+         : null}
       </li>)
 
   return <Reify>
@@ -95,8 +96,8 @@ const web = m => {
           <input className="toggle-all" onChange={m.toggleAll}
            type="checkbox" checked={m.active.map(a => a.length === 0)}/>
           <ul className="todo-list">
-            {filterAtom.flatMapLatest(filter =>
-             Bacon.combineWith(editingAtom, filter, todos))}
+            {filterAtom.flatMapLatest(items =>
+             Bacon.combineWith(editingAtom, items, todos))}
           </ul>
         </section>
         <footer className="footer">
@@ -113,7 +114,7 @@ const web = m => {
            completed.length !== 0
            ? <button className="clear-completed" onClick={m.clean}>
                Clear completed {completed.length}</button>
-           : <span/>)}
+           : null)}
         </footer>
     </section>
     <footer className="info"><p>Double-click to edit a todo</p></footer>
