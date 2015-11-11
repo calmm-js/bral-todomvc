@@ -42,26 +42,26 @@ const model = (initialRaw) => {
           addItem, setItem, remItem, toggleAll, clean}
 }
 
+const textInput = ({text, placeholder, className, save, exit}) => {
+  const textAtom = Atom(text || "")
+  const Exit = _ => {textAtom.set(""); !exit || exit()}
+  const Save = _ => {
+    const title = textAtom.get().trim()
+    title !== "" && save(title)
+    Exit()
+  }
+  return <Reify didMount={c => ReactDOM.findDOMNode(c).focus()}>
+    <input className={className} type="text" placeholder={placeholder}
+       onChange={e => textAtom.set(e.target.value)}
+       onBlur={Save} value={textAtom}
+       onKeyDown={e => e.which === 13 ? Save() :
+                       e.which === 27 ? Exit() : null}/>
+  </Reify>
+}
+
 const web = m => {
   const filterAtom = Atom(m.all)
   const editingAtom = Atom(null)
-
-  const textInput = ({text, placeholder, className, save, exit}) => {
-    const textAtom = Atom(text || "")
-    const Exit = _ => {textAtom.set(""); !exit || exit()}
-    const Save = _ => {
-      const title = textAtom.get().trim()
-      title !== "" && save(title)
-      Exit()
-    }
-    return <Reify didMount={c => ReactDOM.findDOMNode(c).focus()}>
-      <input className={className} type="text" placeholder={placeholder}
-         onChange={e => textAtom.set(e.target.value)}
-         onBlur={Save} value={textAtom}
-         onKeyDown={e => e.which === 13 ? Save() :
-                         e.which === 27 ? Exit() : null}/>
-    </Reify>
-  }
 
   const filterItem = (title, stream) =>
     <li key={title}>
