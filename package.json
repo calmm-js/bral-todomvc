@@ -10,7 +10,7 @@
     "babel": "5.8.23",
     "baconjs": "0.7.80",
     "bacon.model": "0.1.12",
-    "bacon.react": "0.1.5",
+    "bacon.react": "0.2.1",
     "react": "0.14.2",
     "react-dom": "0.14.2",
     "todomvc-app-css": "2.0.1"
