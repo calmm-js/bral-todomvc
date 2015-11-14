@@ -92,30 +92,30 @@ const web = m => {
         {textInput({className: "new-todo", save: m.addItem,
                     placeholder: "What needs to be done?"})}
       </header>
-        <section className="main">
-          <input className="toggle-all" onChange={m.toggleAll}
-           type="checkbox" checked={m.active.map(a => a.length === 0)}/>
-          <ul className="todo-list">
-            {filterAtom.flatMapLatest(items =>
-             Bacon.combineWith(editingAtom, items, todos))}
-          </ul>
-        </section>
-        <footer className="footer">
-          <span className="todo-count">
-            {m.active.map(i => i.length)} {
-            m.active.map(i => i.length === 1 ? "item" : "items")} left
-          </span>
-          <ul className="filters">
-            {filterItem("All", m.all)}
-            {filterItem("Active", m.active)}
-            {filterItem("Completed", m.completed)}
-          </ul>
-          {m.completed.map(completed =>
-           completed.length !== 0
-           ? <button className="clear-completed" onClick={m.clean}>
-               Clear completed {completed.length}</button>
-           : null)}
-        </footer>
+      <section className="main">
+        <input className="toggle-all" onChange={m.toggleAll}
+         type="checkbox" checked={m.active.map(a => a.length === 0)}/>
+        <ul className="todo-list">
+          {filterAtom.flatMapLatest(items =>
+           Bacon.combineWith(editingAtom, items, todos))}
+        </ul>
+      </section>
+      <footer className="footer">
+        <span className="todo-count">
+          {m.active.map(i => i.length)} {
+          m.active.map(i => i.length === 1 ? "item" : "items")} left
+        </span>
+        <ul className="filters">
+          {filterItem("All", m.all)}
+          {filterItem("Active", m.active)}
+          {filterItem("Completed", m.completed)}
+        </ul>
+        {m.completed.map(completed =>
+         completed.length !== 0
+         ? <button className="clear-completed" onClick={m.clean}>
+             Clear completed {completed.length}</button>
+         : null)}
+      </footer>
     </section>
     <footer className="info"><p>Double-click to edit a todo</p></footer>
   </Reify>
