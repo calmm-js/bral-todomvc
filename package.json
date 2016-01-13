@@ -9,7 +9,7 @@
   "dependencies": {
     "baconjs": "^0.7.83",
     "bacon.model": "^0.1.12",
-    "bacon.react.html": "^0.1.2",
+    "bacon.react.html": "^0.1.3",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
     "todomvc-app-css": "^2.0.1"

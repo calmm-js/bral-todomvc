@@ -3,7 +3,7 @@ import React           from "react"
 import ReactDOM        from "react-dom"
 import {Model as Atom} from "bacon.model"
 
-import {classes, A, Button, UL, Span, InputValue} from "bacon.react.html"
+import {classes, A, Button, Input, InputValue, UL, Span} from "bacon.react.html"
 
 const model = initialRaw => {
   const initial = initialRaw.map((item, id) => ({...item, id}))
@@ -77,8 +77,8 @@ const web = m => {
              e.which === 13 && t !== "" && m.addItem(t) && newAtom.set("")}}/>
       </header>
       <section className="main">
-        <input className="toggle-all" onChange={m.toggleAll}
-         type="checkbox" checked={m.active.map(a => a.length === 0)}/>
+        <Input className="toggle-all" onChange={m.toggleAll}
+          type="checkbox" checked={m.active.map(a => a.length === 0)}/>
         <UL className="todo-list">{filterAtom.flatMapLatest(
           items => Bacon.combineWith(editingAtom, items, todos))}</UL>
       </section>
