@@ -1,25 +1,20 @@
-import React from "react"
-import ReactDOM from "react-dom"
-import Bacon from "baconjs"
+import Bacon           from "baconjs"
+import React           from "react"
+import ReactDOM        from "react-dom"
 import {Model as Atom} from "bacon.model"
-import Reify from "bacon.react"
 
-const normalizeIds = (all) =>
+import {classes, A, Button, UL, Span, InputValue} from "bacon.react.html"
+
+const normalizeIds = all =>
   (i => all.map(item => ({...item, id: i++})))(0)
 
-const model = (initialRaw) => {
+const model = initialRaw => {
   const initial = normalizeIds(initialRaw || [])
-
   const itemsAtom = Atom(initial)
-  const counterAtom = Atom(initial.length)
-
-  const inc = () =>
-    {const i = counterAtom.get()
-     counterAtom.set(i+1)
-     return i}
+  let counter = initial.length
 
   const addItem = title =>
-    itemsAtom.modify(is => is.concat({id: inc(), title, isDone: false}))
+    itemsAtom.modify(is => is.concat({id: counter++, title, isDone: false}))
 
   const setItem = ({id, title, isDone}) =>
     itemsAtom.modify(is =>
@@ -42,83 +37,69 @@ const model = (initialRaw) => {
           addItem, setItem, remItem, toggleAll, clean}
 }
 
-const textInput = ({text, placeholder, className, save, exit}) => {
-  const textAtom = Atom(text || "")
-  const Exit = _ => {textAtom.set(""); !exit || exit()}
-  const Save = _ => {
-    const title = textAtom.get().trim()
-    title !== "" && save(title)
-    Exit()
-  }
-  return <Reify didMount={c => ReactDOM.findDOMNode(c).focus()}>
-    <input className={className} type="text" placeholder={placeholder}
-       onChange={e => textAtom.set(e.target.value)}
-       onBlur={Save} value={textAtom}
-       onKeyDown={e => e.which === 13 ? Save() :
-                       e.which === 27 ? Exit() : null}/>
-  </Reify>
-}
-
 const web = m => {
   const filterAtom = Atom(m.all)
   const editingAtom = Atom(null)
+  const newAtom = Atom("")
 
-  const filterItem = (title, stream) =>
-    <li key={title}>
-      <a className={filterAtom.map(f => f === stream ? "selected" : "")}
-         onClick={_ => filterAtom.set(stream)}>{title}</a>
+  const FilterItem = ({title, stream}) => <li key={title}>
+      <A className={filterAtom.map(f => classes(f === stream && "selected"))}
+         onClick={_ => filterAtom.set(stream)}>{title}</A>
     </li>
 
   const todos = (editing, items) =>
     items.map(({id, title, isDone}) =>
-      <li key={id} className={(isDone ? "completed " : "") +
-                              (editing === id ? "editing" : "")}>
+      <li key={id} className={classes(isDone && "completed",
+                                      editing === id && "editing")}>
         <input className="toggle" type="checkbox" checked={isDone}
                onChange={_ => m.setItem({id, title, isDone: !isDone})}/>
         <label onDoubleClick={_ => editingAtom.set(id)}
                className="view">{title}</label>
         <button className="destroy" onClick={_ => m.remItem({id})}/>
-        {editing === id
-         ? textInput({text: title, className: "edit",
-                      save: title => m.setItem({id, title, isDone}),
-                      exit: () => editingAtom.set(null)})
-         : null}
+        {editing !== id ? null : (() => {
+          const textAtom = Atom(title)
+          const exit = () => editingAtom.set(null)
+          const save = () =>
+            {const newTitle = textAtom.get().trim()
+             exit()
+             newTitle !== "" && m.setItem({id, title: newTitle, isDone})}
+          return <InputValue didMount={c => c && c.focus()} type="text"
+                   value={textAtom} className="edit" onBlur={save}
+                   onKeyDown={e => e.which === 13 && save() ||
+                                   e.which === 27 && exit()}/>})()}
       </li>)
 
-  return <Reify>
+  return <div>
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
-        {textInput({className: "new-todo", save: m.addItem,
-                    placeholder: "What needs to be done?"})}
+        <InputValue type="text" value={newAtom} className="new-todo"
+           placeholder="What needs to be done?"
+           onKeyDown={e => {
+             const t = newAtom.get().trim()
+             e.which === 13 && t !== "" && m.addItem(t) && newAtom.set("")}}/>
       </header>
       <section className="main">
         <input className="toggle-all" onChange={m.toggleAll}
          type="checkbox" checked={m.active.map(a => a.length === 0)}/>
-        <ul className="todo-list">
-          {filterAtom.flatMapLatest(items =>
-           Bacon.combineWith(editingAtom, items, todos))}
-        </ul>
+        <UL className="todo-list">{filterAtom.flatMapLatest(
+          items => Bacon.combineWith(editingAtom, items, todos))}</UL>
       </section>
       <footer className="footer">
-        <span className="todo-count">
-          {m.active.map(i => i.length)} {
-          m.active.map(i => i.length === 1 ? "item" : "items")} left
-        </span>
+        <Span className="todo-count">{m.active.map(
+          i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</Span>
         <ul className="filters">
-          {filterItem("All", m.all)}
-          {filterItem("Active", m.active)}
-          {filterItem("Completed", m.completed)}
+          <FilterItem title="All"       stream={m.all}/>
+          <FilterItem title="Active"    stream={m.active}/>
+          <FilterItem title="Completed" stream={m.completed}/>
         </ul>
-        {m.completed.map(completed =>
-         completed.length !== 0
-         ? <button className="clear-completed" onClick={m.clean}>
-             Clear completed {completed.length}</button>
-         : null)}
+        <Button className="clear-completed" onClick={m.clean}
+                hidden={m.completed.map(c => c.length === 0)}>
+          Clear completed</Button>
       </footer>
     </section>
     <footer className="info"><p>Double-click to edit a todo</p></footer>
-  </Reify>
+  </div>
 }
 
 const storeKey = "react.bacon-todos"
