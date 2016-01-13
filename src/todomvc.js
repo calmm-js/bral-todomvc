@@ -5,11 +5,8 @@ import {Model as Atom} from "bacon.model"
 
 import {classes, A, Button, UL, Span, InputValue} from "bacon.react.html"
 
-const normalizeIds = all =>
-  (i => all.map(item => ({...item, id: i++})))(0)
-
 const model = initialRaw => {
-  const initial = normalizeIds(initialRaw || [])
+  const initial = initialRaw.map((item, id) => ({...item, id}))
   const itemsAtom = Atom(initial)
   let counter = initial.length
 
