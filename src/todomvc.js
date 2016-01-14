@@ -35,14 +35,17 @@ const model = initialRaw => {
 }
 
 const web = m => {
-  const filterAtom = Atom(m.all)
+  const routes = [{hash: "#/",          items: m.all,       title: "All"},
+                  {hash: "#/active",    items: m.active,    title: "Active"},
+                  {hash: "#/completed", items: m.completed, title: "Completed"}]
+
+  const routeAtom = Atom()
+  window.onhashchange = () =>
+    routeAtom.set(routes.find(r => r.hash === window.location.hash) || routes[0])
+  window.onhashchange()
+
   const editingAtom = Atom(null)
   const newAtom = Atom("")
-
-  const FilterItem = ({title, stream}) => <li key={title}>
-      <A className={filterAtom.map(f => classes(f === stream && "selected"))}
-         onClick={_ => filterAtom.set(stream)}>{title}</A>
-    </li>
 
   const todos = (editing, items) =>
     items.map(({id, title, isDone}) =>
@@ -79,17 +82,18 @@ const web = m => {
       <section className="main">
         <Input className="toggle-all" onChange={m.toggleAll}
           type="checkbox" checked={m.active.map(a => a.length === 0)}/>
-        <UL className="todo-list">{filterAtom.flatMapLatest(
-          items => Bacon.combineWith(editingAtom, items, todos))}</UL>
+        <UL className="todo-list">{routeAtom.flatMapLatest(
+          ({items}) => Bacon.combineWith(editingAtom, items, todos))}</UL>
       </section>
       <footer className="footer">
         <Span className="todo-count">{m.active.map(
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</Span>
-        <ul className="filters">
-          <FilterItem title="All"       stream={m.all}/>
-          <FilterItem title="Active"    stream={m.active}/>
-          <FilterItem title="Completed" stream={m.completed}/>
-        </ul>
+        <ul className="filters">{routes.map(r => <li key={r.title}>
+            <A className={routeAtom.map(
+                 cr => classes(cr.hash === r.hash && "selected"))}
+               onClick={() => window.location.hash = r.hash}>{r.title}</A>
+          </li>)
+        }</ul>
         <Button className="clear-completed" onClick={m.clean}
                 hidden={m.completed.map(c => c.length === 0)}>
           Clear completed</Button>
