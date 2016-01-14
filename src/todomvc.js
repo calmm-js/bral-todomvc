@@ -3,7 +3,7 @@ import React           from "react"
 import ReactDOM        from "react-dom"
 import {Model as Atom} from "bacon.model"
 
-import {classes, A, Button, Footer, Input, InputValue, UL} from "bacon.react.html"
+import {classes, set, Footer, Input, UL} from "bacon.react.html"
 
 const model = initialRaw => {
   const initial = initialRaw.map((item, id) => ({...item, id}))
@@ -57,25 +57,25 @@ const web = m => {
                className="view">{title}</label>
         <button className="destroy" onClick={() => m.remItem({id})}/>
         {editing !== id ? null : (() => {
-          const textAtom = Atom(title)
+          const text = Atom(title)
           const exit = () => editingAtom.set(null)
           const save = () =>
-            {const newTitle = textAtom.get().trim()
+            {const newTitle = text.get().trim()
              exit()
              newTitle === "" ? m.remItem({id})
                              : m.setItem({id, title: newTitle, isDone})}
-          return <InputValue didMount={c => c && c.focus()} type="text"
-                   value={textAtom} className="edit" onBlur={save}
-                   onKeyDown={e => e.which === 13 && save() ||
-                                   e.which === 27 && exit()}/>})()}
+          return <Input type="text" className="edit" value={text}
+                    onChange={set(text)} didMount={c => c && c.focus()}
+                    onBlur={save} onKeyDown={e => e.which === 13 && save() ||
+                                             e.which === 27 && exit()}/>})()}
       </li>)
 
   return <div>
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
-        <InputValue type="text" value={newAtom} className="new-todo"
-           autoFocus placeholder="What needs to be done?"
+        <Input type="text" className="new-todo" autoFocus value={newAtom}
+           onChange={set(newAtom)} placeholder="What needs to be done?"
            onKeyDown={e => {
              const t = newAtom.get().trim()
              e.which === 13 && t !== "" && m.addItem(t) && newAtom.set("")}}/>
@@ -90,13 +90,13 @@ const web = m => {
         <span className="todo-count">{m.active.map(
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
-            <A href={r.hash} className={routeAtom.map(
-              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</A>
+            <a href={r.hash} className={routeAtom.map(
+              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</a>
           </li>)
         }</ul>
-        <Button className="clear-completed" onClick={m.clean}
+        <button className="clear-completed" onClick={m.clean}
                 hidden={m.completed.map(c => c.length === 0)}>
-          Clear completed</Button>
+          Clear completed</button>
       </Footer>
     </section>
     <footer className="info"><p>Double-click to edit a todo</p></footer>
