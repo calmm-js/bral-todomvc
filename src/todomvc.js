@@ -65,7 +65,7 @@ const web = m => {
              newTitle === "" ? m.remItem({id})
                              : m.setItem({id, title: newTitle, isDone})}
           return <Input type="text" className="edit" value={text}
-                    onChange={set(text)} didMount={c => c && c.focus()}
+                    onChange={set(text)} mount={c => c && c.focus()}
                     onBlur={save} onKeyDown={e => e.which === 13 && save() ||
                                              e.which === 27 && exit()}/>})()}
       </li>)
