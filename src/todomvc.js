@@ -52,10 +52,10 @@ const web = m => {
       <li key={id} className={classes(isDone && "completed",
                                       editing === id && "editing")}>
         <input className="toggle" type="checkbox" checked={isDone}
-               onChange={_ => m.setItem({id, title, isDone: !isDone})}/>
-        <label onDoubleClick={_ => editingAtom.set(id)}
+               onChange={() => m.setItem({id, title, isDone: !isDone})}/>
+        <label onDoubleClick={() => editingAtom.set(id)}
                className="view">{title}</label>
-        <button className="destroy" onClick={_ => m.remItem({id})}/>
+        <button className="destroy" onClick={() => m.remItem({id})}/>
         {editing !== id ? null : (() => {
           const textAtom = Atom(title)
           const exit = () => editingAtom.set(null)
