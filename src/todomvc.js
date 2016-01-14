@@ -62,7 +62,8 @@ const web = m => {
           const save = () =>
             {const newTitle = textAtom.get().trim()
              exit()
-             newTitle !== "" && m.setItem({id, title: newTitle, isDone})}
+             newTitle === "" ? m.remItem({id})
+                             : m.setItem({id, title: newTitle, isDone})}
           return <InputValue didMount={c => c && c.focus()} type="text"
                    value={textAtom} className="edit" onBlur={save}
                    onKeyDown={e => e.which === 13 && save() ||
@@ -74,7 +75,7 @@ const web = m => {
       <header className="header">
         <h1>todos</h1>
         <InputValue type="text" value={newAtom} className="new-todo"
-           placeholder="What needs to be done?"
+           autoFocus placeholder="What needs to be done?"
            onKeyDown={e => {
              const t = newAtom.get().trim()
              e.which === 13 && t !== "" && m.addItem(t) && newAtom.set("")}}/>
