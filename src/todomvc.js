@@ -3,7 +3,7 @@ import React           from "react"
 import ReactDOM        from "react-dom"
 import {Model as Atom} from "bacon.model"
 
-import {classes, set, Footer, Input, UL} from "bacon.react.html"
+import {classes, set, A, Button, Footer, Input, Span, UL} from "bacon.react.html"
 
 const model = initialRaw => {
   const initial = initialRaw.map((item, id) => ({...item, id}))
@@ -87,16 +87,16 @@ const web = m => {
           ({items}) => Bacon.combineWith(editingAtom, items, todos))}</UL>
       </section>
       <Footer className="footer" hidden={m.all.map(is => is.length === 0)}>
-        <span className="todo-count">{m.active.map(
-          i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</span>
+        <Span className="todo-count">{m.active.map(
+          i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</Span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
-            <a href={r.hash} className={routeAtom.map(
-              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</a>
+            <A href={r.hash} className={routeAtom.map(
+              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</A>
           </li>)
         }</ul>
-        <button className="clear-completed" onClick={m.clean}
+        <Button className="clear-completed" onClick={m.clean}
                 hidden={m.completed.map(c => c.length === 0)}>
-          Clear completed</button>
+          Clear completed</Button>
       </Footer>
     </section>
     <footer className="info"><p>Double-click to edit a todo</p></footer>
