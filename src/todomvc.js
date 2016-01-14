@@ -90,9 +90,8 @@ const web = m => {
         <Span className="todo-count">{m.active.map(
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</Span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
-            <A className={routeAtom.map(
-                 cr => classes(cr.hash === r.hash && "selected"))}
-               onClick={() => window.location.hash = r.hash}>{r.title}</A>
+            <A href={r.hash} className={routeAtom.map(
+              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</A>
           </li>)
         }</ul>
         <Button className="clear-completed" onClick={m.clean}
