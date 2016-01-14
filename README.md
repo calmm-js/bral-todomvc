@@ -7,4 +7,6 @@ npm run build
 
 Point browser to `atomi-todomvc/public/index.html`.
 
-See also: [bacon.react](https://github.com/polytypic/bacon.react).
+See also:
+* [bacon.react](https://github.com/polytypic/bacon.react)
+* [bacon.react.html](https://github.com/polytypic/bacon.react.html)
