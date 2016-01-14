@@ -7,8 +7,9 @@ For some time now, we have actually been using this approach, namely
 
 * storing state in mutable Bacon.Model objects,
 * potentially using lenses to access such state,
-* specifying all kinds of state dependent computations using Bacon streams, and
-* embedding such streams directly into React Virtual DOM
+* specifying all kinds of state dependent computations as Bacon streams and
+  properties, and
+* embedding such streams and properties directly into React Virtual DOM
 
 in production.  It just works.
 
