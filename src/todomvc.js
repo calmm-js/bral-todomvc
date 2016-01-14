@@ -3,7 +3,7 @@ import React           from "react"
 import ReactDOM        from "react-dom"
 import {Model as Atom} from "bacon.model"
 
-import {classes, set, A, Button, Footer, Input, Span, UL} from "bacon.react.html"
+import B, {classes, set} from "bacon.react.html"
 
 const model = initialRaw => {
   const initial = initialRaw.map((item, id) => ({...item, id}))
@@ -64,7 +64,7 @@ const web = m => {
              exit()
              newTitle === "" ? m.remItem({id})
                              : m.setItem({id, title: newTitle, isDone})}
-          return <Input type="text" className="edit" value={text}
+          return <B.input type="text" className="edit" value={text}
                     onChange={set(text)} mount={c => c && c.focus()}
                     onBlur={save} onKeyDown={e => e.which === 13 && save() ||
                                              e.which === 27 && exit()}/>})()}
@@ -74,30 +74,30 @@ const web = m => {
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
-        <Input type="text" className="new-todo" autoFocus value={newAtom}
+        <B.input type="text" className="new-todo" autoFocus value={newAtom}
            onChange={set(newAtom)} placeholder="What needs to be done?"
            onKeyDown={e => {
              const t = newAtom.get().trim()
              e.which === 13 && t !== "" && m.addItem(t) && newAtom.set("")}}/>
       </header>
       <section className="main">
-        <Input className="toggle-all" onChange={m.toggleAll}
+        <B.input className="toggle-all" onChange={m.toggleAll}
           type="checkbox" checked={m.active.map(a => a.length === 0)}/>
-        <UL className="todo-list">{routeAtom.flatMapLatest(
-          ({items}) => Bacon.combineWith(editingAtom, items, todos))}</UL>
+        <B.ul className="todo-list">{routeAtom.flatMapLatest(
+          ({items}) => Bacon.combineWith(editingAtom, items, todos))}</B.ul>
       </section>
-      <Footer className="footer" hidden={m.all.map(is => is.length === 0)}>
-        <Span className="todo-count">{m.active.map(
-          i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</Span>
+      <B.footer className="footer" hidden={m.all.map(is => is.length === 0)}>
+        <B.span className="todo-count">{m.active.map(
+          i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
-            <A href={r.hash} className={routeAtom.map(
-              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</A>
+            <B.a href={r.hash} className={routeAtom.map(
+              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</B.a>
           </li>)
         }</ul>
-        <Button className="clear-completed" onClick={m.clean}
-                hidden={m.completed.map(c => c.length === 0)}>
-          Clear completed</Button>
-      </Footer>
+        <B.button className="clear-completed" onClick={m.clean}
+                  hidden={m.completed.map(c => c.length === 0)}>
+          Clear completed</B.button>
+      </B.footer>
     </section>
     <footer className="info"><p>Double-click to edit a todo</p></footer>
   </div>
