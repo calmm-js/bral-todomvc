@@ -59,7 +59,7 @@ const web = m => {
             <label onDoubleClick={() => editing.set(id)}
                    className="view">{title}</label>
             <button className="destroy" onClick={() => m.remItem({id})}/>
-            {editing.map(e => e !== id ? null : (() => {
+            {editing.map(e => e === id && (() => {
               const text = Model(title)
               const exit = () => editing.set(null)
               const save = () =>
