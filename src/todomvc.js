@@ -39,10 +39,10 @@ const web = m => {
                   {hash: "#/active",    items: m.active,    title: "Active"},
                   {hash: "#/completed", items: m.completed, title: "Completed"}]
 
-  const routeAtom = Atom()
-  window.onhashchange = () =>
-    routeAtom.set(routes.find(r => r.hash === window.location.hash) || routes[0])
-  window.onhashchange()
+  const route =
+    Bacon.once().merge(Bacon.fromBinder(sink => window.onhashchange = sink))
+    .map(() => routes.find(r => r.hash === window.location.hash) || routes[0])
+    .toProperty()
 
   const editingAtom = Atom(null)
   const newAtom = Atom("")
@@ -83,14 +83,14 @@ const web = m => {
       <section className="main">
         <B.input className="toggle-all" onChange={m.toggleAll}
           type="checkbox" checked={m.active.map(a => a.length === 0)}/>
-        <B.ul className="todo-list">{routeAtom.flatMapLatest(
+        <B.ul className="todo-list">{route.flatMapLatest(
           ({items}) => Bacon.combineWith(editingAtom, items, todos))}</B.ul>
       </section>
       <B.footer className="footer" hidden={m.all.map(is => is.length === 0)}>
         <B.span className="todo-count">{m.active.map(
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
-            <B.a href={r.hash} className={routeAtom.map(
+            <B.a href={r.hash} className={route.map(
               cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</B.a>
           </li>)
         }</ul>
