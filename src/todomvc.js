@@ -40,9 +40,8 @@ const web = m => {
                   {hash: "#/completed", items: m.completed, title: "Completed"}]
 
   const route =
-    Bacon.once().merge(Bacon.fromBinder(sink => window.onhashchange = sink))
+    Bacon.fromBinder(sink => window.onhashchange = sink).toProperty(0)
     .map(() => routes.find(r => r.hash === window.location.hash) || routes[0])
-    .toProperty()
 
   const editingAtom = Atom(null)
   const newAtom = Atom("")
