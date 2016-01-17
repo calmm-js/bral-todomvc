@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "bacon.model": "^0.1.12",
-    "bacon.react.html": "^0.5.0",
+    "bacon.react.html": "^0.6.0",
     "baconjs": "^0.7.83",
     "ramda": "^0.19.1",
     "react": "^0.14.3",

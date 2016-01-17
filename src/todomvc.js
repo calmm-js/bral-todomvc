@@ -3,7 +3,7 @@ import R        from "ramda"
 import React    from "react"
 import ReactDOM from "react-dom"
 import {Model}  from "bacon.model"
-import B, {classes, set} from "bacon.react.html"
+import B, {classes} from "bacon.react.html"
 
 const model = init => {
   const all = Model(init.map((item, id) => ({...item, id})))
@@ -36,49 +36,47 @@ const web = m => {
   const items = route.flatMapLatest(r => r.items)
 
   const editing = Model(null)
-  const newTodo = Model("")
 
   return <div>
     <section className="todoapp">
       <header className="header">
         <h1>todos</h1>
-        <B.input type="text" className="new-todo" autoFocus value={newTodo}
-           onChange={set(newTodo)} placeholder="What needs to be done?"
-           onKeyDown={e => {
-             const t = newTodo.get().trim()
-             e.which === 13 && t !== "" && m.addItem(t) && newTodo.set("")}}/>
+        <input type="text" className="new-todo" autoFocus
+           placeholder="What needs to be done?" onKeyDown={e => {
+             const t = e.target.value.trim()
+             if (e.which === 13 && t !== "") {
+               m.addItem(t); e.target.value = ""}}}/>
       </header>
       <section className="main">
         <B.input className="toggle-all" onChange={m.toggleAll}
           type="checkbox" checked={m.active.map(a => a.length === 0)}/>
         <B.ul className="todo-list">{items.map(R.map(({id, title, isDone}) =>
-          <B.li key={id} className={editing.map(e =>
-              classes(isDone && "completed", e === id && "editing"))}>
+          <B.li key={id} {...classes(isDone && "completed",
+                                     editing.map(e => e === id && "editing"))}>
             <input className="toggle" type="checkbox" checked={isDone}
                    onChange={() => m.setItem({id, title, isDone: !isDone})}/>
             <label onDoubleClick={() => editing.set(id)}
                    className="view">{title}</label>
             <button className="destroy" onClick={() => m.remItem({id})}/>
             {editing.map(e => e === id && (() => {
-              const text = Model(title)
               const exit = () => editing.set(null)
-              const save = () =>
-                {const newTitle = text.get().trim()
+              const save = e =>
+                {const newTitle = e.target.value.trim()
                  exit()
                  newTitle === "" ? m.remItem({id})
                                  : m.setItem({id, title: newTitle, isDone})}
-              return <B.input type="text" onChange={set(text)} onBlur={save}
-                       className="edit" value={text} mount={c => c && c.focus()}
-                       key="x" onKeyDown={e => e.which === 13 && save() ||
-                                               e.which === 27 && exit()}/>})())}
+              return <B.input type="text" onBlur={save} className="edit" key="x"
+                       mount={c => c && c.focus()} defaultValue={title}
+                       onKeyDown={e => e.which === 13 && save(e) ||
+                                       e.which === 27 && exit()}/>})())}
           </B.li>))}</B.ul>
       </section>
       <B.footer className="footer" hidden={m.all.map(a => a.length === 0)}>
         <B.span className="todo-count">{m.active.map(
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
-            <B.a href={r.hash} className={route.map(
-              cr => classes(cr.hash === r.hash && "selected"))}>{r.title}</B.a>
+            <B.a {...classes(route.map(cr => cr.hash === r.hash && "selected"))}
+               href={r.hash}>{r.title}</B.a>
           </li>)}</ul>
         <B.button className="clear-completed" onClick={m.clean}
                   hidden={m.completed.map(a => a.length === 0)}>
