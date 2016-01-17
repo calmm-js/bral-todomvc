@@ -2,11 +2,11 @@ import Bacon    from "baconjs"
 import R        from "ramda"
 import React    from "react"
 import ReactDOM from "react-dom"
-import {Model}  from "bacon.model"
+import Atom     from "bacon.atom"
 import B, {bind, classes} from "bacon.react.html"
 
 const model = init => {
-  const all = Model(init.map((item, id) => ({...item, id})))
+  const all = Atom(init.map((item, id) => ({...item, id})))
   let counter = init.length
   return {
     all,
@@ -18,9 +18,9 @@ const model = init => {
     setItem: ({id, title, completed}) =>
       all.modify(R.map(i => i.id === id ? {id, title, completed} : i)),
     remItem: ({id}) => all.modify(R.filter(i => i.id !== id)),
-    allDone: all.lens({
-      get: R.all(i => i.completed),
-      set: (items, completed) => items.map(i => ({...i, completed}))}),
+    allDone: all.lens(R.lens(
+      R.all(i => i.completed),
+      (completed, items) => items.map(i => ({...i, completed})))),
     clean: () => all.modify(R.filter(i => !i.completed))
   }
 }
@@ -36,7 +36,7 @@ const web = m => {
   const route = hash.map(h => R.find(r => r.hash === h, routes) || routes[0])
   const items = route.flatMapLatest(r => r.items)
 
-  const editing = Model(null)
+  const editing = Atom(null)
 
   return <div>
     <section className="todoapp">
