@@ -3,24 +3,25 @@ import R        from "ramda"
 import React    from "react"
 import ReactDOM from "react-dom"
 import {Model}  from "bacon.model"
-import B, {classes} from "bacon.react.html"
+import B, {bind, classes} from "bacon.react.html"
 
 const model = init => {
   const all = Model(init.map((item, id) => ({...item, id})))
   let counter = init.length
   return {
     all,
-    active: all.map(R.filter(i => !i.isDone)),
-    completed: all.map(R.filter(i => i.isDone)),
+    isEmpty: all.map(a => a.length === 0),
+    active: all.map(R.filter(i => !i.completed)),
+    completed: all.map(R.filter(i => i.completed)),
     addItem: title =>
-      all.modify(R.append({id: counter++, title, isDone: false})),
-    setItem: ({id, title, isDone}) =>
-      all.modify(R.map(i => i.id === id ? {id, title, isDone} : i)),
+      all.modify(R.append({id: counter++, title, completed: false})),
+    setItem: ({id, title, completed}) =>
+      all.modify(R.map(i => i.id === id ? {id, title, completed} : i)),
     remItem: ({id}) => all.modify(R.filter(i => i.id !== id)),
-    toggleAll: () =>
-      all.modify(is => {const isDone = is.some(i => !i.isDone)
-                        return is.map(i => ({...i, isDone}))}),
-    clean: () => all.modify(R.filter(i => !i.isDone))
+    allDone: all.lens({
+      get: R.all(i => i.completed),
+      set: (items, completed) => items.map(i => ({...i, completed}))}),
+    clean: () => all.modify(R.filter(i => !i.completed))
   }
 }
 
@@ -48,13 +49,13 @@ const web = m => {
                m.addItem(t); e.target.value = ""}}}/>
       </header>
       <section className="main">
-        <B.input className="toggle-all" onChange={m.toggleAll}
-          type="checkbox" checked={m.active.map(a => a.length === 0)}/>
-        <B.ul className="todo-list">{items.map(R.map(({id, title, isDone}) =>
-          <B.li key={id} {...classes(isDone && "completed",
+        <B.input type="checkbox" className="toggle-all" hidden={m.isEmpty}
+          {...bind({checked: m.allDone})}/>
+        <B.ul className="todo-list">{items.map(R.map(({id, title, completed}) =>
+          <B.li key={id} {...classes(completed && "completed",
                                      editing.map(e => e === id && "editing"))}>
-            <input className="toggle" type="checkbox" checked={isDone}
-                   onChange={() => m.setItem({id, title, isDone: !isDone})}/>
+            <input className="toggle" type="checkbox" checked={completed}
+              onChange={() => m.setItem({id, title, completed: !completed})}/>
             <label onDoubleClick={() => editing.set(id)}
                    className="view">{title}</label>
             <button className="destroy" onClick={() => m.remItem({id})}/>
@@ -64,14 +65,14 @@ const web = m => {
                 {const newTitle = e.target.value.trim()
                  exit()
                  newTitle === "" ? m.remItem({id})
-                                 : m.setItem({id, title: newTitle, isDone})}
+                                 : m.setItem({id, title: newTitle, completed})}
               return <B.input type="text" onBlur={save} className="edit" key="x"
                        mount={c => c && c.focus()} defaultValue={title}
                        onKeyDown={e => e.which === 13 && save(e) ||
                                        e.which === 27 && exit()}/>})())}
           </B.li>))}</B.ul>
       </section>
-      <B.footer className="footer" hidden={m.all.map(a => a.length === 0)}>
+      <B.footer className="footer" hidden={m.isEmpty}>
         <B.span className="todo-count">{m.active.map(
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
@@ -87,7 +88,7 @@ const web = m => {
   </div>
 }
 
-const storeKey = "react.bacon-todos"
+const storeKey = "todos-react.bacon"
 
 const m = model(JSON.parse(localStorage.getItem(storeKey) || "[]"))
 m.all.onValue(is => localStorage.setItem(storeKey, JSON.stringify(is)))
