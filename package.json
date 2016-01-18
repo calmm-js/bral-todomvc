@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "build": "browserify src/todomvc.js -t babelify -g uglifyify > public/app.js",
+    "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o public/app.js",
     "lint": "eslint src test"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "browserify": "^12.0.1",
     "eslint": "^1.10.3",
     "eslint-plugin-react": "^3.5.1",
-    "uglifyify": "^3.0.1"
+    "uglifyify": "^3.0.1",
+    "watchify": "^3.4.0"
   }
 }
