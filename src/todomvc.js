@@ -10,9 +10,9 @@ const model = init => {
   let counter = init.length
   return {
     all,
-    isEmpty: all.map(a => a.length === 0),
-    active: all.map(R.filter(i => !i.completed)),
-    completed: all.map(R.filter(i => i.completed)),
+    isEmpty: B(all, a => a.length === 0),
+    active: B(all, R.filter(i => !i.completed)),
+    completed: B(all, R.filter(i => i.completed)),
     addItem: title =>
       all.modify(R.append({id: counter++, title, completed: false})),
     setItem: ({id, title, completed}) =>
@@ -33,7 +33,7 @@ const web = m => {
                   {hash: "#/active",    items: m.active,    title: "Active"},
                   {hash: "#/completed", items: m.completed, title: "Completed"}]
 
-  const route = hash.map(h => R.find(r => r.hash === h, routes) || routes[0])
+  const route = B(hash, h => R.find(r => r.hash === h, routes) || routes[0])
   const items = route.flatMapLatest(r => r.items)
 
   const editing = Atom(null)
@@ -51,15 +51,15 @@ const web = m => {
       <section className="main">
         <B.input type="checkbox" className="toggle-all" hidden={m.isEmpty}
           {...bind({checked: m.allDone})}/>
-        <B.ul className="todo-list">{items.map(R.map(({id, title, completed}) =>
+        <B.ul className="todo-list">{B(items, R.map(({id, title, completed}) =>
           <B.li key={id} {...classes(completed && "completed",
-                                     editing.map(e => e === id && "editing"))}>
+                                     B(editing, e => e === id && "editing"))}>
             <input className="toggle" type="checkbox" checked={completed}
               onChange={() => m.setItem({id, title, completed: !completed})}/>
             <label onDoubleClick={() => editing.set(id)}
                    className="view">{title}</label>
             <button className="destroy" onClick={() => m.remItem({id})}/>
-            {editing.map(e => e === id && (() => {
+            {B(editing, e => e === id && (() => {
               const exit = () => editing.set(null)
               const save = e =>
                 {const newTitle = e.target.value.trim()
@@ -73,14 +73,14 @@ const web = m => {
           </B.li>))}</B.ul>
       </section>
       <B.footer className="footer" hidden={m.isEmpty}>
-        <B.span className="todo-count">{m.active.map(
+        <B.span className="todo-count">{B(m.active,
           i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
             <B.a {...classes(route.map(cr => cr.hash === r.hash && "selected"))}
                href={r.hash}>{r.title}</B.a>
           </li>)}</ul>
         <B.button className="clear-completed" onClick={m.clean}
-                  hidden={m.completed.map(a => a.length === 0)}>
+                  hidden={B(m.completed, a => a.length === 0)}>
           Clear completed</B.button>
       </B.footer>
     </section>
