@@ -1,16 +1,16 @@
 {
   "name": "atomi-todomvc",
-  "version": "0.1.1",
   "license": "MIT",
   "private": true,
   "scripts": {
     "build": "browserify src/todomvc.js -t babelify -g uglifyify > public/app.js",
-    "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o public/app.js",
-    "lint": "eslint src test"
+    "lint": "eslint src test",
+    "prepublish": "npm run lint && npm run build",
+    "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o public/app.js"
   },
   "dependencies": {
     "bacon.atom": "^1.0.0",
-    "bacon.react.html": "^1.1.0",
+    "bacon.react.html": "^1.1.2",
     "baconjs": "^0.7.83",
     "ramda": "^0.19.1",
     "react": "^0.14.3",
