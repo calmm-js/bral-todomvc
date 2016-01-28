@@ -14,7 +14,7 @@ const hash = Bacon.fromEvent(window, "hashchange").toProperty(0)
 const TodoItem = ({model, editing = Atom(false)}) =>
   <B.li {...classes(B(model.lens(L("completed")), c => c && "completed"),
                     B(editing, e => e && "editing"))}>
-    <B.input className="toggle" type="checkbox"
+    <B.input className="toggle" type="checkbox" hidden={editing}
              {...bind({checked: model.lens(L("completed"))})}/>
     <B.label onDoubleClick={() => editing.set(true)}
              className="view">{model.lens(L("title"))}</B.label>
