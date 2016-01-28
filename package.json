@@ -16,9 +16,7 @@
     "ramda": "^0.19.1",
     "react": "^0.14.3",
     "react-dom": "^0.14.3",
-    "schemation": "^0.2.0",
-    "todomvc-app-css": "^2.0.1",
-    "uuid": "^2.0.1"
+    "todomvc-app-css": "^2.0.1"
   },
   "devDependencies": {
     "babel": "^6.3.13",

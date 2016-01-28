@@ -5,8 +5,6 @@ import L from "partial.lenses"
 import R from "ramda"
 import React from "react"
 import ReactDOM from "react-dom"
-import uuid from "uuid"
-import {matches} from "schemation"
 
 const hash = Bacon.fromEvent(window, "hashchange").toProperty(0)
              .map(() => window.location.hash)
@@ -33,12 +31,13 @@ const TodoItem = ({model, editing = Atom(false)}) =>
   </B.li>
 
 const TodoApp = ({model: m}) => {
-  const routes = [{hash: "#/",          items: m.all,       title: "All"},
-                  {hash: "#/active",    items: m.active,    title: "Active"},
-                  {hash: "#/completed", items: m.completed, title: "Completed"}]
+  const routes = [{hash: "#/",          filter: () => true, title: "All"},
+                  {hash: "#/active",    filter: active,     title: "Active"},
+                  {hash: "#/completed", filter: completed,  title: "Completed"}]
 
   const route = B(hash, h => R.find(r => r.hash === h, routes) || routes[0])
-  const ids = B(route.flatMapLatest(r => r.items), R.map(R.prop("id")))
+  const indices = B(m.all, route, (all, {filter}) =>
+                    R.flatten(all.map((it, i) => filter(it) ? [i] : [])))
 
   return <div>
     <section className="todoapp">
@@ -53,18 +52,18 @@ const TodoApp = ({model: m}) => {
       <section className="main">
         <B.input type="checkbox" className="toggle-all" hidden={m.isEmpty}
           {...bind({checked: m.allDone})}/>
-        <B.ul className="todo-list">{B(ids, R.map(id =>
-          <TodoItem key={id} model={m.all.lens(L.find(matches({id})))}/>))}</B.ul>
+        <B.ul className="todo-list">{B(indices, R.map(i =>
+          <TodoItem key={i} model={m.all.lens(L(i))}/>))}</B.ul>
       </section>
       <B.footer className="footer" hidden={m.isEmpty}>
-        <B.span className="todo-count">{B(m.active,
+        <B.span className="todo-count">{B(B(m.all, R.filter(active)),
           i => `${i.length} item${i.length === 1 ? "" : "s"} left`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
             <B.a {...classes(route.map(cr => cr.hash === r.hash && "selected"))}
                href={r.hash}>{r.title}</B.a>
           </li>)}</ul>
         <B.button className="clear-completed" onClick={m.clean}
-                  hidden={B(m.completed, a => a.length === 0)}>
+                  hidden={B(m.all, R.all(active))}>
           Clear completed</B.button>
       </B.footer>
     </section>
@@ -72,17 +71,18 @@ const TodoApp = ({model: m}) => {
   </div>
 }
 
+const active = i => !i.completed
+const completed = i => i.completed
+
 TodoApp.model = (all = Atom([])) => ({
   all,
   isEmpty: B(all, a => a.length === 0),
-  active: B(all, R.filter(i => !i.completed)),
-  completed: B(all, R.filter(i => i.completed)),
-  addItem: ({id = uuid.v4(), title, completed = false}) =>
-    all.modify(R.append({id, title, completed})),
+  addItem: ({title, completed = false}) =>
+    all.modify(R.append({title, completed})),
   allDone: all.lens(L.lens(
-    R.all(i => i.completed),
+    R.all(completed),
     (completed, items) => items.map(i => ({...i, completed})))),
-  clean: () => all.modify(R.filter(i => !i.completed))
+  clean: () => all.modify(R.filter(active))
 })
 
 const storeKey = "todos-react.bacon"
