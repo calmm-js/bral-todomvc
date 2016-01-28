@@ -58,7 +58,7 @@ const TodoApp = ({model: m}) => {
       </section>
       <B.footer className="footer" hidden={m.isEmpty}>
         <B.span className="todo-count">{B(m.active,
-          i => `${i.length} item${i.length === 1 ? "" : "s"}`)}</B.span>
+          i => `${i.length} item${i.length === 1 ? "" : "s"} left`)}</B.span>
         <ul className="filters">{routes.map(r => <li key={r.title}>
             <B.a {...classes(route.map(cr => cr.hash === r.hash && "selected"))}
                href={r.hash}>{r.title}</B.a>
