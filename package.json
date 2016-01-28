@@ -3,7 +3,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "browserify src/todomvc.js -t babelify -g uglifyify > public/app.js",
+    "build": "export NODE_ENV=production && browserify src/todomvc.js -t babelify -t envify -g uglifyify > public/app.js",
     "lint": "eslint src test",
     "prepublish": "npm run lint && npm run build",
     "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o public/app.js"
@@ -28,6 +28,7 @@
     "babel-preset-stage-2": "^6.3.13",
     "babelify": "^7.2.0",
     "browserify": "^12.0.1",
+    "envify": "^3.4.0",
     "eslint": "^1.10.3",
     "eslint-plugin-react": "^3.5.1",
     "uglifyify": "^3.0.1",
