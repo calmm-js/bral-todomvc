@@ -6,6 +6,18 @@ import R from "ramda"
 import React from "react"
 import ReactDOM from "react-dom"
 
+Bacon.fromIds = (ids, fromId) =>
+  ids.scan([{}, []], ([oldIds], ids) => {
+    const newIds = {}
+    const newVs = []
+    ids.forEach(id => {
+      const newV = id in oldIds ? oldIds[id] : fromId(id)
+      newIds[id] = newV
+      newVs.push(newV)
+    })
+    return [newIds, newVs]
+  }).map(s => s[1])
+
 const hash = Bacon.fromEvent(window, "hashchange").toProperty(0)
              .map(() => window.location.hash)
 
@@ -52,8 +64,8 @@ const TodoApp = ({model: m}) => {
       <section className="main">
         <B.input type="checkbox" className="toggle-all" hidden={m.isEmpty}
           {...bind({checked: m.allDone})}/>
-        <B.ul className="todo-list">{B(indices, R.map(i =>
-          <TodoItem key={i} model={m.all.lens(L(i))}/>))}</B.ul>
+        <B.ul className="todo-list">{Bacon.fromIds(indices, i =>
+          <TodoItem key={i} model={m.all.lens(L(i))}/>)}</B.ul>
       </section>
       <B.footer className="footer" hidden={m.isEmpty}>
         <B.span className="todo-count">{B(B(m.all, R.filter(active)),
