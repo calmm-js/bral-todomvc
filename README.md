@@ -1,6 +1,6 @@
 This is an example of using React with
-[Bacon.React.HTML](https://github.com/polytypic/bacon.react.html) and
-[Bacon.Atom](https://github.com/polytypic/bacon.atom) to implement a reactive
+[Bacon.React.HTML](https://github.com/dirty-js/bacon.react.html) and
+[Bacon.Atom](https://github.com/dirty-js/bacon.atom) to implement a reactive
 model and UI.
 
 For some time now, we have actually been using this approach, namely
@@ -16,10 +16,10 @@ in production.  It just works.
 To test locally
 
 ```bash
-git clone https://github.com/polytypic/atomi-todomvc.git
-cd atomi-todomvc
+git clone https://github.com/dirty-js/bacon.react.atom-todomvc.git
+cd bacon.react.atom-todomvc
 npm install
 npm run build
 ```
 
-and then point browser to `atomi-todomvc/public/index.html`.
+and then point browser to `bacon.react.atom-todomvc/public/index.html`.
