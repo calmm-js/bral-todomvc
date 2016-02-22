@@ -1,3 +1,5 @@
+[![](https://david-dm.org/dirty-js/bacon.react.atom-todomvc.svg)](https://david-dm.org/dirty-js/bacon.react.atom-todomvc)
+
 This is an example of using React with
 [Bacon.React.HTML](https://github.com/dirty-js/bacon.react.html) and
 [Bacon.Atom](https://github.com/dirty-js/bacon.atom) to implement a reactive
