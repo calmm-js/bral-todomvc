@@ -87,7 +87,7 @@ const active = i => !i.completed
 const completed = i => i.completed
 
 TodoApp.model = (all = Atom([])) => ({
-  all,
+  all: all.lens(L.define([])),
   isEmpty: B(all, a => a.length === 0),
   addItem: ({title, completed = false}) =>
     all.modify(R.append({title, completed})),
