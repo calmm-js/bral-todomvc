@@ -9,10 +9,10 @@
     "watch": "watchify src/todomvc.js -v -t [ babelify --sourceMaps=inline ] -o public/app.js"
   },
   "dependencies": {
-    "bacon.atom": "^2.0.1",
+    "bacon.atom": "^2.0.2",
     "bacon.react.html": "^1.4.0",
     "baconjs": "^0.7.83",
-    "partial.lenses": "^0.7.0",
+    "partial.lenses": "^1.0.0",
     "ramda": "^0.19.1",
     "react": "^0.14.7",
     "react-dom": "^0.14.7",
