@@ -1,5 +1,5 @@
 {
-  "name": "atomi-todomvc",
+  "name": "bacon.react.atom-todomvc",
   "license": "MIT",
   "private": true,
   "scripts": {
