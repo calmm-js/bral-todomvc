@@ -1,8 +1,8 @@
-[![](https://david-dm.org/dirty-js/bacon.react.atom-todomvc.svg)](https://david-dm.org/dirty-js/bacon.react.atom-todomvc)
+[![](https://david-dm.org/calmm-js/bacon.react.atom-todomvc.svg)](https://david-dm.org/calmm-js/bacon.react.atom-todomvc)
 
 This is an example of using React with
-[Bacon.React.HTML](https://github.com/dirty-js/bacon.react.html) and
-[Bacon.Atom](https://github.com/dirty-js/bacon.atom) to implement a reactive
+[Bacon.React.HTML](https://github.com/calmm-js/bacon.react.html) and
+[Bacon.Atom](https://github.com/calmm-js/bacon.atom) to implement a reactive
 model and UI.
 
 For some time now, we have actually been using this approach, namely
@@ -18,7 +18,7 @@ in production.  It just works.
 To test locally
 
 ```bash
-git clone https://github.com/dirty-js/bacon.react.atom-todomvc.git
+git clone https://github.com/calmm-js/bacon.react.atom-todomvc.git
 cd bacon.react.atom-todomvc
 npm install
 npm run build
