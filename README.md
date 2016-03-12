@@ -1,4 +1,4 @@
-[![](https://david-dm.org/calmm-js/bacon.react.atom-todomvc.svg)](https://david-dm.org/calmm-js/bacon.react.atom-todomvc)
+[![Build Status](https://travis-ci.org/calmm-js/bral-todomvc.svg?branch=master)](https://travis-ci.org/calmm-js/bral-todomvc) [![](https://david-dm.org/calmm-js/bral-todomvc.svg)](https://david-dm.org/calmm-js/bral-todomvc) [![](https://david-dm.org/calmm-js/bral-todomvc/dev-status.svg)](https://david-dm.org/calmm-js/bral-todomvc#info=devDependencies)
 
 This is an example of using React with
 [Bacon.React.HTML](https://github.com/calmm-js/bacon.react.html) and
@@ -18,10 +18,9 @@ in production.  It just works.
 To test locally
 
 ```bash
-git clone https://github.com/calmm-js/bacon.react.atom-todomvc.git
-cd bacon.react.atom-todomvc
+git clone https://github.com/calmm-js/bral-todomvc.git
+cd bral-todomvc
 npm install
-npm run build
 ```
 
-and then point browser to `bacon.react.atom-todomvc/public/index.html`.
+and then `open public/index.html`.
