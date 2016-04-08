@@ -67,7 +67,10 @@ const TodoApp = ({model: m}) => {
           Clear completed</B.button>
       </B.footer>
     </section>
-    <footer className="info"><p>Double-click to edit a todo</p></footer>
+    <footer className="info">
+      <p>Double-click to edit a todo</p>
+      <p><a href="https://github.com/calmm-js/bral-todomvc">GitHub</a></p>
+    </footer>
   </div>
 }
 
