@@ -10,16 +10,16 @@
   },
   "dependencies": {
     "bacon.atom": "^3.0.0",
-    "bacon.react.html": "^2.0.0",
+    "bacon.react.html": "^3.0.0",
     "baconjs": "^0.7.84",
-    "partial.lenses": "^2.0.0",
+    "partial.lenses": "^2.1.0",
     "ramda": "^0.20.1",
-    "react": "^0.14.8",
-    "react-dom": "^0.14.8",
+    "react": "^15.0.0",
+    "react-dom": "^15.0.0",
     "todomvc-app-css": "^2.0.4"
   },
   "devDependencies": {
-    "babel-cli": "^6.6.5",
+    "babel-cli": "^6.7.5",
     "babel-eslint": "^6.0.2",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.7.4",
     "babel-plugin-transform-react-constant-elements": "^6.5.0",
@@ -29,8 +29,8 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "envify": "^3.4.0",
-    "eslint": "^2.6.0",
-    "eslint-plugin-react": "^4.2.3",
+    "eslint": "^2.7.0",
+    "eslint-plugin-react": "^4.3.0",
     "uglifyify": "^3.0.1",
     "watchify": "^3.7.0"
   }
