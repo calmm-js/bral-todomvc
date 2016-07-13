@@ -1,7 +1,7 @@
 import Atom from "bacon.atom"
 import B, {bind, classes, fromIds} from "bacon.react.html"
 import Bacon from "baconjs"
-import * as L from "partial.lenses"
+import P, * as L from "partial.lenses"
 import R from "ramda"
 import React from "react"
 import ReactDOM from "react-dom"
@@ -82,9 +82,7 @@ TodoApp.model = (all = Atom([])) => ({
   isEmpty: B(all, a => a.length === 0),
   addItem: ({title, completed = false}) =>
     all.modify(R.append({title, completed})),
-  allDone: all.lens(L.lens(
-    R.all(completed),
-    (completed, items) => items.map(i => ({...i, completed})))),
+  allDone: all.lens(L.lens(R.all(completed), L.set(P(L.sequence, "completed")))),
   clean: () => all.modify(R.filter(active))
 })
 
