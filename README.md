@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/calmm-js/bral-todomvc.svg?branch=master)](https://travis-ci.org/calmm-js/bral-todomvc) [![](https://david-dm.org/calmm-js/bral-todomvc.svg)](https://david-dm.org/calmm-js/bral-todomvc) [![](https://david-dm.org/calmm-js/bral-todomvc/dev-status.svg)](https://david-dm.org/calmm-js/bral-todomvc#info=devDependencies) [![Gitter](https://img.shields.io/gitter/room/calmm-js/chat.js.svg?style=flat-square)](https://gitter.im/calmm-js/chat)
+[![Build Status](https://travis-ci.org/calmm-js/bral-todomvc.svg?branch=master)](https://travis-ci.org/calmm-js/bral-todomvc) [![](https://david-dm.org/calmm-js/bral-todomvc.svg)](https://david-dm.org/calmm-js/bral-todomvc) [![](https://david-dm.org/calmm-js/bral-todomvc/dev-status.svg)](https://david-dm.org/calmm-js/bral-todomvc#info=devDependencies)
 
 This is an example of using React with
 [Bacon.React.HTML](https://github.com/calmm-js/bacon.react.html) and
