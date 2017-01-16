@@ -23,4 +23,4 @@ cd bral-todomvc
 npm install
 ```
 
-and then `open public/index.html`.
+and then `open docs/index.html`.
