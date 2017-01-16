@@ -1,7 +1,7 @@
+import * as L from "partial.lenses"
 import Atom from "bacon.atom"
 import B, {bind, classes, fromIds} from "bacon.react.html"
 import Bacon from "baconjs"
-import P, * as L from "partial.lenses"
 import R from "ramda"
 import React from "react"
 import ReactDOM from "react-dom"
@@ -10,12 +10,12 @@ const hash = Bacon.fromEvent(window, "hashchange").toProperty(0)
              .map(() => window.location.hash)
 
 const TodoItem = ({model, editing = Atom(false)}) =>
-  <B.li {...classes(B(model.lens("completed"), c => c && "completed"),
+  <B.li {...classes(B(model.view("completed"), c => c && "completed"),
                     B(editing, e => e && "editing"))}>
     <B.input className="toggle" type="checkbox" hidden={editing}
-             {...bind({checked: model.lens("completed")})}/>
+             {...bind({checked: model.view("completed")})}/>
     <B.label onDoubleClick={() => editing.set(true)}
-             className="view">{model.lens("title")}</B.label>
+             className="view">{model.view("title")}</B.label>
     <button className="destroy" onClick={() => model.set()}/>
     {B(editing, e => e && (() => {
       const exit = () => editing.set(false)
@@ -23,9 +23,9 @@ const TodoItem = ({model, editing = Atom(false)}) =>
         {const newTitle = e.target.value.trim()
          exit()
          newTitle === "" ? model.set()
-                         : model.lens("title").set(newTitle)}
+                         : model.view("title").set(newTitle)}
       return <B.input type="text" onBlur={save} className="edit" key="x"
-               mount={c => c && c.focus()} defaultValue={model.lens("title")}
+               mount={c => c && c.focus()} defaultValue={model.view("title")}
                onKeyDown={e => e.which === 13 && save(e) ||
                                e.which === 27 && exit()}/>})())}
   </B.li>
@@ -53,7 +53,7 @@ const TodoApp = ({model: m}) => {
         <B.input type="checkbox" className="toggle-all" hidden={m.isEmpty}
           {...bind({checked: m.allDone})}/>
         <B.ul className="todo-list">{fromIds(indices, i =>
-          <TodoItem key={i} model={m.all.lens(i)}/>)}</B.ul>
+          <TodoItem key={i} model={m.all.view(i)}/>)}</B.ul>
       </section>
       <B.footer className="footer" hidden={m.isEmpty}>
         <B.span className="todo-count">{B(B(m.all, R.filter(active)),
@@ -78,11 +78,11 @@ const active = i => !i.completed
 const completed = i => i.completed
 
 TodoApp.model = (all = Atom([])) => ({
-  all: all.lens(L.define([])),
+  all: all.view(L.define([])),
   isEmpty: B(all, a => a.length === 0),
   addItem: ({title, completed = false}) =>
     all.modify(R.append({title, completed})),
-  allDone: all.lens(L.lens(R.all(completed), L.set(P(L.sequence, "completed")))),
+  allDone: all.view(L.lens(R.all(completed), L.set([L.elems, "completed"]))),
   clean: () => all.modify(R.filter(active))
 })
 
